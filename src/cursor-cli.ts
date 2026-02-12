@@ -56,7 +56,7 @@ export function runCursorAgent(
   cwd: string,
   opts: { model?: string; mode?: string } = {}
 ): Promise<{ exitCode: number; output: string }> {
-  const model = opts.model ?? "auto";
+  const model = opts.model ?? "claude-4-opus";
   const args = ["-p", prompt, "--model", model];
   if (opts.mode) args.push("--mode", opts.mode);
 
@@ -80,7 +80,9 @@ export function runCursorAgent(
     });
 
     proc.stderr?.on("data", (data: Buffer) => {
-      stderr += data.toString();
+      const text = data.toString();
+      stderr += text;
+      process.stderr.write(chalk.dim("  " + text));
     });
 
     proc.on("close", (code) => {

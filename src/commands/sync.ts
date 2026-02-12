@@ -65,10 +65,14 @@ async function syncDocuments(): Promise<void> {
     ].join("\n");
 
     const result = await runCursorAgent(prompt, OPENMEMORY_HOME);
-    if (result.exitCode === 0) {
+    if (result.exitCode === 0 && existsSync(destPath)) {
       console.log(chalk.green(`    ✓ Saved as ${filename}`));
     } else {
       console.log(chalk.red(`    ✗ Failed to fetch ${doc.name}`));
+      if (result.output.trim()) {
+        const lines = result.output.trim().split("\n").slice(-5);
+        for (const line of lines) console.log(chalk.dim(`      ${line}`));
+      }
     }
   }
 }
