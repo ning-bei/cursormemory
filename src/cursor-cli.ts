@@ -3,6 +3,7 @@ import { existsSync } from "fs";
 import { join } from "path";
 import { homedir } from "os";
 import chalk from "chalk";
+import { getCursorApiKey } from "./config.js";
 
 export function checkCursorCli(): boolean {
   try {
@@ -14,9 +15,9 @@ export function checkCursorCli(): boolean {
 }
 
 export function checkAuth(): { ok: boolean; hint: string } {
-  // env vars take priority
-  if (process.env.CURSOR_API_KEY || process.env.CURSOR_AUTH_TOKEN) {
-    return { ok: true, hint: "env" };
+  // env var or config
+  if (getCursorApiKey() || process.env.CURSOR_AUTH_TOKEN) {
+    return { ok: true, hint: getCursorApiKey() ? "config/env" : "env" };
   }
 
   // check for stored session from previous `agent` login
@@ -61,10 +62,12 @@ export function runCursorAgent(
 
   return new Promise((resolve) => {
     console.log(chalk.dim("  Running Cursor agent..."));
+    const apiKey = getCursorApiKey();
+    const env = { ...process.env, ...(apiKey ? { CURSOR_API_KEY: apiKey } : {}) };
     const proc = spawn("agent", args, {
       cwd,
       stdio: ["ignore", "pipe", "pipe"],
-      env: { ...process.env },
+      env,
     });
 
     let output = "";

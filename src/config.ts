@@ -13,6 +13,7 @@ export interface DocumentConfig {
 }
 
 export interface OpenMemoryConfig {
+  cursorApiKey?: string;
   projects: ProjectConfig[];
   documents: DocumentConfig[];
 }
@@ -82,4 +83,14 @@ export function removeDocument(name: string): OpenMemoryConfig {
   config.documents = config.documents.filter((d) => d.name !== name);
   saveConfig(config);
   return config;
+}
+
+export function setCursorApiKey(key: string): void {
+  const config = loadConfig();
+  config.cursorApiKey = key;
+  saveConfig(config);
+}
+
+export function getCursorApiKey(): string | undefined {
+  return process.env.CURSOR_API_KEY || loadConfig().cursorApiKey;
 }

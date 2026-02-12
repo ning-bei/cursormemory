@@ -8,6 +8,7 @@ import { addProjectCommand, removeProjectCommand, listProjectsCommand } from "./
 import { addDocCommand, removeDocCommand, listDocsCommand } from "./commands/add-doc.js";
 import { searchCommand } from "./commands/search.js";
 import { statusCommand } from "./commands/status.js";
+import { setApiKeyCommand, showConfigCommand } from "./commands/config-cmd.js";
 
 const program = new Command();
 
@@ -86,6 +87,19 @@ doc
   .action(removeDocCommand);
 
 doc.command("list").description("List configured documents").action(listDocsCommand);
+
+// config
+const config = program.command("config").description("Manage openmemory configuration");
+
+config
+  .command("set-api-key <key>")
+  .description("Set CURSOR_API_KEY in config")
+  .action(setApiKeyCommand);
+
+config
+  .command("show")
+  .description("Show current configuration")
+  .action(showConfigCommand);
 
 // status
 program.command("status").description("Show openmemory status").action(statusCommand);
