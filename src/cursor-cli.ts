@@ -56,8 +56,8 @@ export function runCursorAgent(
   cwd: string,
   opts: { model?: string; mode?: string } = {}
 ): Promise<{ exitCode: number; output: string }> {
-  const model = opts.model ?? "claude-4-opus";
-  const args = ["-p", prompt, "--model", model];
+  const model = opts.model ?? "opus-4.6";
+  const args = ["-p", prompt, "--model", model, "--approve-mcps"];
   if (opts.mode) args.push("--mode", opts.mode);
 
   return new Promise((resolve) => {

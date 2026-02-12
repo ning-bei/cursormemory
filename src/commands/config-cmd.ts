@@ -26,5 +26,4 @@ export async function showConfigCommand(): Promise<void> {
   }
 
   console.log(`  Projects: ${config.projects.length}`);
-  console.log(`  Documents: ${config.documents.length}`);
 }

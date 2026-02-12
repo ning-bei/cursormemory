@@ -6,20 +6,13 @@ export interface ProjectConfig {
   path: string;
 }
 
-export interface DocumentConfig {
-  name: string;
-  url: string;
-  mcp?: string;
-}
-
 export interface OpenMemoryConfig {
   cursorApiKey?: string;
   projects: ProjectConfig[];
-  documents: DocumentConfig[];
 }
 
 function defaultConfig(): OpenMemoryConfig {
-  return { projects: [], documents: [] };
+  return { projects: [] };
 }
 
 export function ensureDirectories(): void {
@@ -65,25 +58,6 @@ export function removeProject(name: string): OpenMemoryConfig {
   return config;
 }
 
-export function addDocument(name: string, url: string, mcp?: string): OpenMemoryConfig {
-  const config = loadConfig();
-  const existing = config.documents.find((d) => d.name === name);
-  if (existing) {
-    existing.url = url;
-    if (mcp) existing.mcp = mcp;
-  } else {
-    config.documents.push({ name, url, ...(mcp ? { mcp } : {}) });
-  }
-  saveConfig(config);
-  return config;
-}
-
-export function removeDocument(name: string): OpenMemoryConfig {
-  const config = loadConfig();
-  config.documents = config.documents.filter((d) => d.name !== name);
-  saveConfig(config);
-  return config;
-}
 
 export function setCursorApiKey(key: string): void {
   const config = loadConfig();

@@ -5,10 +5,10 @@ import { syncCommand } from "./commands/sync.js";
 import { distillCommand } from "./commands/distill.js";
 import { indexCommand } from "./commands/index-cmd.js";
 import { addProjectCommand, removeProjectCommand, listProjectsCommand } from "./commands/add-project.js";
-import { addDocCommand, removeDocCommand, listDocsCommand } from "./commands/add-doc.js";
 import { searchCommand } from "./commands/search.js";
 import { statusCommand } from "./commands/status.js";
 import { setApiKeyCommand, showConfigCommand } from "./commands/config-cmd.js";
+import { installCommandsAction } from "./commands/install-commands.js";
 
 const program = new Command();
 
@@ -27,9 +27,7 @@ program
 // sync
 program
   .command("sync")
-  .description("Sync project memories and cloud documents to ~/openmemory")
-  .option("--projects", "Only sync projects")
-  .option("--docs", "Only sync cloud documents")
+  .description("Sync project memories to ~/openmemory")
   .action(syncCommand);
 
 // distill
@@ -71,23 +69,6 @@ project
 
 project.command("list").description("List configured projects").action(listProjectsCommand);
 
-// document management
-const doc = program.command("doc").description("Manage cloud documents");
-
-doc
-  .command("add <url>")
-  .description("Add a cloud document to fetch during sync")
-  .requiredOption("--name <name>", "Document name")
-  .option("--mcp <server>", "MCP server to use for fetching")
-  .action(addDocCommand);
-
-doc
-  .command("remove <name>")
-  .description("Remove a cloud document from config")
-  .action(removeDocCommand);
-
-doc.command("list").description("List configured documents").action(listDocsCommand);
-
 // config
 const config = program.command("config").description("Manage openmemory configuration");
 
@@ -100,6 +81,12 @@ config
   .command("show")
   .description("Show current configuration")
   .action(showConfigCommand);
+
+// install cursor commands
+program
+  .command("install-commands")
+  .description("Install Cursor IDE commands to ~/.cursor/commands/")
+  .action(installCommandsAction);
 
 // status
 program.command("status").description("Show openmemory status").action(statusCommand);
