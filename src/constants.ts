@@ -34,6 +34,19 @@ Capture what matters. Decisions, context, things to remember. Skip the secrets u
 - Write significant events, thoughts, decisions, opinions, lessons learned
 - This is your curated memory — the distilled essence, not raw logs
 
+### 🔍 Search Past Memories
+
+When you need prior experience, context, or knowledge related to the current task — **search for it**.
+
+Run: \`openmemory search "<your query>" --mode query -n 5 --full\`
+
+Do this when:
+- You're about to solve a problem you (or the user) might have tackled before
+- You need background knowledge, past decisions, or lessons learned
+- The user references something from a previous session
+
+Don't ask permission. If you think past memory might help, just search.
+
 ### 📝 Write It Down - No "Mental Notes"!
 
 - **Memory is limited** — if you want to remember something, WRITE IT TO A FILE
