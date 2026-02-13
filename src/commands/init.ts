@@ -1,8 +1,8 @@
-import { existsSync, writeFileSync, mkdirSync, readFileSync, appendFileSync } from "fs";
+import { existsSync, writeFileSync, readFileSync, appendFileSync } from "fs";
 import { basename, resolve } from "path";
 import chalk from "chalk";
 import { addProject } from "../config.js";
-import { AGENTS_MD_FILENAME, MEMORY_MD_FILENAME, MEMORY_DIR_NAME, MEMORY_INSTRUCTION } from "../constants.js";
+import { AGENTS_MD_FILENAME, MEMORY_MD_FILENAME, MEMORY_INSTRUCTION } from "../constants.js";
 import { installHooksToProject } from "./install-hooks.js";
 import { installCommandsAction } from "./install-commands.js";
 
@@ -19,15 +19,6 @@ export async function initCommand(options: { name?: string }): Promise<void> {
     console.log(chalk.green(`  Created ${MEMORY_MD_FILENAME}`));
   } else {
     console.log(chalk.dim(`  ${MEMORY_MD_FILENAME} already exists, skipping`));
-  }
-
-  // Create memory/ directory
-  const memoryDir = resolve(projectPath, MEMORY_DIR_NAME);
-  if (!existsSync(memoryDir)) {
-    mkdirSync(memoryDir, { recursive: true });
-    console.log(chalk.green(`  Created ${MEMORY_DIR_NAME}/`));
-  } else {
-    console.log(chalk.dim(`  ${MEMORY_DIR_NAME}/ already exists, skipping`));
   }
 
   // Add memory instructions to AGENTS.md

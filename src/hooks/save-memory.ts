@@ -1,6 +1,8 @@
-import { readFileSync, writeFileSync, appendFileSync, existsSync, mkdirSync } from "fs";
+import { readFileSync, writeFileSync, appendFileSync, existsSync, mkdirSync, cpSync } from "fs";
 import { join, basename } from "path";
-import { MEMORY_DIR_NAME, OPENMEMORY_HOME } from "../constants.js";
+import chalk from "chalk";
+import { MEMORY_DIR_NAME, MEMORY_MD_FILENAME, OPENMEMORY_HOME, PROJECTS_DIR } from "../constants.js";
+import { loadConfig } from "../config.js";
 
 const STATE_PATH = join(OPENMEMORY_HOME, ".hook-state.json");
 
@@ -78,11 +80,6 @@ function nowTime(): string {
 function extractUserQuery(text: string): string {
   const match = text.match(/<user_query>([\s\S]*?)<\/user_query>/);
   return match ? match[1].trim() : text.trim();
-}
-
-function truncate(text: string, maxLen: number): string {
-  if (text.length <= maxLen) return text;
-  return text.slice(0, maxLen) + "...";
 }
 
 function extractAssistantText(entry: TranscriptEntry): string {
@@ -171,11 +168,42 @@ function formatTurnEntry(turn: TurnData): string {
   return lines.join("\n");
 }
 
-function findProjectRoot(workspaceRoots: string[]): string | null {
+function resolveProjectName(workspaceRoots: string[]): string | null {
+  const config = loadConfig();
   for (const root of workspaceRoots) {
-    if (existsSync(join(root, MEMORY_DIR_NAME))) return root;
+    const project = config.projects.find((p) => p.path === root);
+    if (project) return project.name;
   }
-  return workspaceRoots[0] || null;
+  // Fall back to directory name of first workspace root
+  return workspaceRoots[0] ? basename(workspaceRoots[0]) : null;
+}
+
+// --- sync ---
+
+export function syncProject(projectName: string, projectPath: string): void {
+  const destDir = join(PROJECTS_DIR, projectName);
+  mkdirSync(destDir, { recursive: true });
+  const srcMemory = join(projectPath, MEMORY_MD_FILENAME);
+  if (existsSync(srcMemory)) {
+    cpSync(srcMemory, join(destDir, MEMORY_MD_FILENAME));
+  }
+}
+
+export async function syncCommand(): Promise<void> {
+  console.log(chalk.bold("Syncing openmemory...\n"));
+  const config = loadConfig();
+  if (config.projects.length === 0) {
+    console.log(chalk.yellow("  No projects configured. Use `openmemory project add` or `openmemory init`."));
+    return;
+  }
+  for (const project of config.projects) {
+    console.log(chalk.dim(`  Syncing project: ${project.name}`));
+    syncProject(project.name, project.path);
+    if (existsSync(join(project.path, MEMORY_MD_FILENAME))) {
+      console.log(chalk.green(`    ✓ ${MEMORY_MD_FILENAME}`));
+    }
+  }
+  console.log(chalk.bold.green("\nSync complete."));
 }
 
 // --- main ---
@@ -213,10 +241,11 @@ export async function hookSaveMemory(): Promise<void> {
     const turn = parseTurn(newLines);
     if (!turn) return;
 
-    const projectRoot = findProjectRoot(input.workspace_roots || []);
-    if (!projectRoot) return;
+    const projectName = resolveProjectName(input.workspace_roots || []);
+    if (!projectName) return;
 
-    const memDir = join(projectRoot, MEMORY_DIR_NAME);
+    // Write directly to ~/openmemory/projects/<name>/memory/
+    const memDir = join(PROJECTS_DIR, projectName, MEMORY_DIR_NAME);
     if (!existsSync(memDir)) mkdirSync(memDir, { recursive: true });
 
     const dailyFile = join(memDir, `${today()}.md`);

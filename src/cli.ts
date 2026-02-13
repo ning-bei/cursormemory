@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { Command } from "commander";
 import { initCommand } from "./commands/init.js";
-import { syncCommand } from "./commands/sync.js";
+import { syncCommand } from "./hooks/save-memory.js";
 import { distillCommand } from "./commands/distill.js";
 import { indexCommand } from "./commands/index-cmd.js";
 import { addProjectCommand, removeProjectCommand, listProjectsCommand } from "./commands/add-project.js";
