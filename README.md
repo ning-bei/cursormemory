@@ -52,6 +52,7 @@ cursormemory init
 ```
 
 `cursormemory init` does the following:
+
 - Creates `MEMORY.md` and `AGENTS.md` with memory instructions
 - Installs Cursor hooks (`.cursor/hooks.json`) to auto-capture conversations
 - Installs Cursor commands (`~/.cursor/commands/`)
@@ -61,22 +62,26 @@ cursormemory init
 
 ### Core
 
-| Command | Description |
-|---|---|
-| `cursormemory init` | Initialize cursormemory in the current project |
-| `cursormemory sync` | Sync all project memories to `~/cursormemory` |
+
+| Command                | Description                                                           |
+| ---------------------- | --------------------------------------------------------------------- |
+| `cursormemory init`    | Initialize cursormemory in the current project                        |
+| `cursormemory sync`    | Sync all project memories to `~/cursormemory`                         |
 | `cursormemory distill` | Distill recent notes into `~/cursormemory/MEMORY.md` via Cursor agent |
-| `cursormemory status` | Show cursormemory status and project info |
+| `cursormemory status`  | Show cursormemory status and project info                             |
+
 
 ### Daemon (auto-distill)
 
-| Command | Description |
-|---|---|
-| `cursormemory daemon start` | Start the background auto-distill daemon |
-| `cursormemory daemon stop` | Stop the daemon |
-| `cursormemory daemon status` | Show daemon status, last distill time |
-| `cursormemory daemon install` | Install as macOS launch agent (auto-start on login) |
-| `cursormemory daemon uninstall` | Remove the macOS launch agent |
+
+| Command                         | Description                                         |
+| ------------------------------- | --------------------------------------------------- |
+| `cursormemory daemon start`     | Start the background auto-distill daemon            |
+| `cursormemory daemon stop`      | Stop the daemon                                     |
+| `cursormemory daemon status`    | Show daemon status, last distill time               |
+| `cursormemory daemon install`   | Install as macOS launch agent (auto-start on login) |
+| `cursormemory daemon uninstall` | Remove the macOS launch agent                       |
+
 
 ```bash
 cursormemory daemon start --interval 4  # distill every 4 hours
@@ -85,22 +90,26 @@ cursormemory daemon status
 
 ### Notifications (Telegram)
 
-| Command | Description |
-|---|---|
-| `cursormemory notify setup --token <token>` | Configure Telegram bot (auto-detects chat ID) |
-| `cursormemory notify setup --token <token> --chat-id <id>` | Configure manually |
-| `cursormemory notify test` | Send a test message |
-| `cursormemory notify briefing` | Send a morning briefing from current memories |
-| `cursormemory notify send <message>` | Send a custom message |
+
+| Command                                                    | Description                                   |
+| ---------------------------------------------------------- | --------------------------------------------- |
+| `cursormemory notify setup --token <token>`                | Configure Telegram bot (auto-detects chat ID) |
+| `cursormemory notify setup --token <token> --chat-id <id>` | Configure manually                            |
+| `cursormemory notify test`                                 | Send a test message                           |
+| `cursormemory notify briefing`                             | Send a morning briefing from current memories |
+| `cursormemory notify send <message>`                       | Send a custom message                         |
+
 
 The daemon automatically sends a briefing via Telegram after each distill cycle.
 
 ### Search & Index (requires qmd)
 
-| Command | Description |
-|---|---|
-| `cursormemory index` | Index `~/cursormemory` with qmd for semantic search |
-| `cursormemory search <query>` | Search memories using qmd |
+
+| Command                       | Description                                         |
+| ----------------------------- | --------------------------------------------------- |
+| `cursormemory index`          | Index `~/cursormemory` with qmd for semantic search |
+| `cursormemory search <query>` | Search memories using qmd                           |
+
 
 ```bash
 cursormemory search "authentication flow" --mode vsearch --num 5
@@ -109,25 +118,31 @@ cursormemory index --force  # re-embed all documents
 
 ### Project Management
 
-| Command | Description |
-|---|---|
-| `cursormemory project add [path]` | Add a project (defaults to cwd) |
-| `cursormemory project remove <name>` | Remove a project |
-| `cursormemory project list` | List all tracked projects |
+
+| Command                              | Description                     |
+| ------------------------------------ | ------------------------------- |
+| `cursormemory project add [path]`    | Add a project (defaults to cwd) |
+| `cursormemory project remove <name>` | Remove a project                |
+| `cursormemory project list`          | List all tracked projects       |
+
 
 ### Configuration
 
-| Command | Description |
-|---|---|
-| `cursormemory config set-api-key <key>` | Set Cursor API key |
-| `cursormemory config show` | Show current configuration |
+
+| Command                                 | Description                |
+| --------------------------------------- | -------------------------- |
+| `cursormemory config set-api-key <key>` | Set Cursor API key         |
+| `cursormemory config show`              | Show current configuration |
+
 
 ### Setup
 
-| Command | Description |
-|---|---|
-| `cursormemory install-hooks` | Install Cursor hooks in the current project |
+
+| Command                         | Description                                          |
+| ------------------------------- | ---------------------------------------------------- |
+| `cursormemory install-hooks`    | Install Cursor hooks in the current project          |
 | `cursormemory install-commands` | Install Cursor IDE commands to `~/.cursor/commands/` |
+
 
 ## Cursor Integration
 
