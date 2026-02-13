@@ -2,11 +2,11 @@ import { existsSync, readdirSync, statSync } from "fs";
 import { join } from "path";
 import chalk from "chalk";
 import { loadConfig } from "../config.js";
-import { OPENMEMORY_HOME, PROJECTS_DIR, DOCUMENTS_DIR, MEMORY_PATH } from "../constants.js";
+import { CURSORMEMORY_HOME, PROJECTS_DIR, DOCUMENTS_DIR, MEMORY_PATH } from "../constants.js";
 
 export async function statusCommand(): Promise<void> {
-  console.log(chalk.bold("openmemory status\n"));
-  console.log(`  Home: ${chalk.cyan(OPENMEMORY_HOME)}`);
+  console.log(chalk.bold("cursormemory status\n"));
+  console.log(`  Home: ${chalk.cyan(CURSORMEMORY_HOME)}`);
 
   if (existsSync(MEMORY_PATH)) {
     const stat = statSync(MEMORY_PATH);

@@ -1,10 +1,10 @@
 {
-  "name": "openmemory",
+  "name": "cursormemory",
   "version": "0.1.0",
   "description": "CLI tool for building a persistent memory system across projects and documents",
   "type": "module",
   "bin": {
-    "openmemory": "./dist/cli.js"
+    "cursormemory": "./dist/cli.js"
   },
   "scripts": {
     "build": "tsc",

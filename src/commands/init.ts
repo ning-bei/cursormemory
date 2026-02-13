@@ -10,7 +10,7 @@ export async function initCommand(options: { name?: string }): Promise<void> {
   const projectPath = resolve(process.cwd());
   const projectName = options.name ?? basename(projectPath);
 
-  console.log(chalk.bold(`Initializing openmemory in: ${projectPath}`));
+  console.log(chalk.bold(`Initializing cursormemory in: ${projectPath}`));
 
   // Create MEMORY.md
   const memoryPath = resolve(projectPath, MEMORY_MD_FILENAME);
@@ -45,7 +45,7 @@ export async function initCommand(options: { name?: string }): Promise<void> {
 
   // Register in config.json
   addProject(projectName, projectPath);
-  console.log(chalk.green(`  Registered project "${projectName}" in ~/openmemory/config.json`));
+  console.log(chalk.green(`  Registered project "${projectName}" in ~/cursormemory/config.json`));
 
-  console.log(chalk.bold.green("\nDone! Project initialized with openmemory."));
+  console.log(chalk.bold.green("\nDone! Project initialized with cursormemory."));
 }

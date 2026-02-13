@@ -5,8 +5,8 @@ import chalk from "chalk";
 const HOOK_ENTRY = { command: ".cursor/hooks/save-memory.sh" };
 
 const SAVE_MEMORY_SH = `#!/bin/bash
-# OpenMemory: save conversation turn to daily memory file
-openmemory _hook-save-memory 2>/dev/null || true
+# CursorMemory: save conversation turn to daily memory file
+cursormemory _hook-save-memory 2>/dev/null || true
 `;
 
 interface HooksConfig {

@@ -14,40 +14,40 @@ import { installHooksCommand } from "./commands/install-hooks.js";
 const program = new Command();
 
 program
-  .name("openmemory")
+  .name("cursormemory")
   .description("A CLI tool for building a persistent memory system across projects and documents")
   .version("0.1.0");
 
 // init
 program
   .command("init")
-  .description("Initialize openmemory in the current project (creates MEMORY.md, AGENTS.md, hooks)")
+  .description("Initialize cursormemory in the current project (creates MEMORY.md, AGENTS.md, hooks)")
   .option("-n, --name <name>", "Project name (defaults to directory name)")
   .action(initCommand);
 
 // sync
 program
   .command("sync")
-  .description("Sync project memories to ~/openmemory")
+  .description("Sync project memories to ~/cursormemory")
   .action(syncCommand);
 
 // distill
 program
   .command("distill")
-  .description("Distill recent memories into ~/openmemory/MEMORY.md using Cursor agent")
+  .description("Distill recent memories into ~/cursormemory/MEMORY.md using Cursor agent")
   .action(distillCommand);
 
 // index
 program
   .command("index")
-  .description("Index ~/openmemory with qmd for search")
+  .description("Index ~/cursormemory with qmd for search")
   .option("-f, --force", "Force re-embed all documents")
   .action(indexCommand);
 
 // search
 program
   .command("search <query>")
-  .description("Search openmemory using qmd")
+  .description("Search cursormemory using qmd")
   .option("-m, --mode <mode>", "Search mode: search, vsearch, query", "search")
   .option("-n, --num <count>", "Number of results")
   .option("--full", "Show full document content")
@@ -59,19 +59,19 @@ const project = program.command("project").description("Manage tracked projects"
 
 project
   .command("add [path]")
-  .description("Add a project to openmemory config (defaults to current directory)")
+  .description("Add a project to cursormemory config (defaults to current directory)")
   .option("-n, --name <name>", "Project name (defaults to directory name)")
   .action(addProjectCommand);
 
 project
   .command("remove <name>")
-  .description("Remove a project from openmemory config")
+  .description("Remove a project from cursormemory config")
   .action(removeProjectCommand);
 
 project.command("list").description("List configured projects").action(listProjectsCommand);
 
 // config
-const config = program.command("config").description("Manage openmemory configuration");
+const config = program.command("config").description("Manage cursormemory configuration");
 
 config
   .command("set-api-key <key>")
@@ -92,11 +92,11 @@ program
 // install cursor hooks
 program
   .command("install-hooks")
-  .description("Install Cursor hooks to auto-save conversations to ~/openmemory")
+  .description("Install Cursor hooks to auto-save conversations to ~/cursormemory")
   .action(installHooksCommand);
 
 // status
-program.command("status").description("Show openmemory status").action(statusCommand);
+program.command("status").description("Show cursormemory status").action(statusCommand);
 
 // internal hook handler (hidden from help)
 const hookCmd = new Command("_hook-save-memory").action(hookSaveMemory);

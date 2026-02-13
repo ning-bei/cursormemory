@@ -1,10 +1,10 @@
-# openmemory
+# cursormemory
 
 A CLI tool for building a **persistent memory system** for AI coding agents across projects and documents. Designed for [Cursor IDE](https://cursor.com), it gives your AI assistant long-term memory that survives session restarts.
 
 ## The Problem
 
-AI agents start fresh every session. They forget decisions, context, and lessons learned. `openmemory` fixes this by:
+AI agents start fresh every session. They forget decisions, context, and lessons learned. `cursormemory` fixes this by:
 
 - Automatically capturing conversation logs via Cursor hooks
 - Maintaining per-project `MEMORY.md` files as curated long-term memory
@@ -14,7 +14,7 @@ AI agents start fresh every session. They forget decisions, context, and lessons
 ## How It Works
 
 ```
-~/openmemory/
+~/cursormemory/
 ├── config.json              # Projects & settings
 ├── MEMORY.md                # Global long-term memory
 ├── projects/
@@ -35,7 +35,7 @@ Each session, the agent reads `MEMORY.md` for context. Conversations are automat
 
 ```bash
 # Clone and install globally
-git clone <repo-url> && cd openmemory
+git clone <repo-url> && cd cursormemory
 npm install && npm link
 ```
 
@@ -44,18 +44,18 @@ Requires [Node.js](https://nodejs.org) 18+. Optional: [qmd](https://github.com/t
 ## Quick Start
 
 ```bash
-# Initialize openmemory in your project
+# Initialize cursormemory in your project
 cd your-project
-openmemory init
+cursormemory init
 
 # That's it. Cursor will now auto-save conversations to memory.
 ```
 
-`openmemory init` does the following:
+`cursormemory init` does the following:
 - Creates `MEMORY.md` and `AGENTS.md` with memory instructions
 - Installs Cursor hooks (`.cursor/hooks.json`) to auto-capture conversations
 - Installs Cursor commands (`~/.cursor/commands/`)
-- Registers the project in `~/openmemory/config.json`
+- Registers the project in `~/cursormemory/config.json`
 
 ## Commands
 
@@ -63,54 +63,54 @@ openmemory init
 
 | Command | Description |
 |---|---|
-| `openmemory init` | Initialize openmemory in the current project |
-| `openmemory sync` | Sync all project memories to `~/openmemory` |
-| `openmemory distill` | Distill recent notes into `~/openmemory/MEMORY.md` via Cursor agent |
-| `openmemory status` | Show openmemory status and project info |
+| `cursormemory init` | Initialize cursormemory in the current project |
+| `cursormemory sync` | Sync all project memories to `~/cursormemory` |
+| `cursormemory distill` | Distill recent notes into `~/cursormemory/MEMORY.md` via Cursor agent |
+| `cursormemory status` | Show cursormemory status and project info |
 
 ### Search & Index (requires qmd)
 
 | Command | Description |
 |---|---|
-| `openmemory index` | Index `~/openmemory` with qmd for semantic search |
-| `openmemory search <query>` | Search memories using qmd |
+| `cursormemory index` | Index `~/cursormemory` with qmd for semantic search |
+| `cursormemory search <query>` | Search memories using qmd |
 
 ```bash
-openmemory search "authentication flow" --mode vsearch --num 5
-openmemory index --force  # re-embed all documents
+cursormemory search "authentication flow" --mode vsearch --num 5
+cursormemory index --force  # re-embed all documents
 ```
 
 ### Project Management
 
 | Command | Description |
 |---|---|
-| `openmemory project add [path]` | Add a project (defaults to cwd) |
-| `openmemory project remove <name>` | Remove a project |
-| `openmemory project list` | List all tracked projects |
+| `cursormemory project add [path]` | Add a project (defaults to cwd) |
+| `cursormemory project remove <name>` | Remove a project |
+| `cursormemory project list` | List all tracked projects |
 
 ### Configuration
 
 | Command | Description |
 |---|---|
-| `openmemory config set-api-key <key>` | Set Cursor API key |
-| `openmemory config show` | Show current configuration |
+| `cursormemory config set-api-key <key>` | Set Cursor API key |
+| `cursormemory config show` | Show current configuration |
 
 ### Setup
 
 | Command | Description |
 |---|---|
-| `openmemory install-hooks` | Install Cursor hooks in the current project |
-| `openmemory install-commands` | Install Cursor IDE commands to `~/.cursor/commands/` |
+| `cursormemory install-hooks` | Install Cursor hooks in the current project |
+| `cursormemory install-commands` | Install Cursor IDE commands to `~/.cursor/commands/` |
 
 ## Cursor Integration
 
 ### Hooks
 
-After `openmemory init`, a Cursor hook is installed that runs at the end of each conversation turn. It parses the transcript and appends a summary (query, response, files touched, tools used) to `~/openmemory/projects/<name>/memory/YYYY-MM-DD.md`.
+After `cursormemory init`, a Cursor hook is installed that runs at the end of each conversation turn. It parses the transcript and appends a summary (query, response, files touched, tools used) to `~/cursormemory/projects/<name>/memory/YYYY-MM-DD.md`.
 
 ### Commands
 
-The `/sync-openmemory-docs` Cursor command lets you fetch cloud documents (Yuque, web pages) and save them to `~/openmemory/documents/`.
+The `/sync-cursormemory-docs` Cursor command lets you fetch cloud documents (Yuque, web pages) and save them to `~/cursormemory/documents/`.
 
 ### Agent Instructions
 

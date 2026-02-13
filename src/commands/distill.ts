@@ -1,5 +1,5 @@
 import chalk from "chalk";
-import { OPENMEMORY_HOME, DISTILL_PROMPT } from "../constants.js";
+import { CURSORMEMORY_HOME, DISTILL_PROMPT } from "../constants.js";
 import { runCursorAgent, requireCursorCli } from "../cursor-cli.js";
 
 export async function distillCommand(): Promise<void> {
@@ -7,11 +7,11 @@ export async function distillCommand(): Promise<void> {
 
   requireCursorCli();
 
-  const prompt = DISTILL_PROMPT + OPENMEMORY_HOME;
-  const result = await runCursorAgent(prompt, OPENMEMORY_HOME);
+  const prompt = DISTILL_PROMPT + CURSORMEMORY_HOME;
+  const result = await runCursorAgent(prompt, CURSORMEMORY_HOME);
 
   if (result.exitCode === 0) {
-    console.log(chalk.bold.green("\nDistillation complete. Check ~/openmemory/MEMORY.md"));
+    console.log(chalk.bold.green("\nDistillation complete. Check ~/cursormemory/MEMORY.md"));
   } else {
     console.log(chalk.red("\nDistillation failed. Check the output above."));
   }

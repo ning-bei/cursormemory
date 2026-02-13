@@ -13,7 +13,7 @@ export async function showConfigCommand(): Promise<void> {
   const config = loadConfig();
   const apiKey = getCursorApiKey();
 
-  console.log(chalk.bold("openmemory config\n"));
+  console.log(chalk.bold("cursormemory config\n"));
   console.log(`  Config path: ${chalk.cyan(CONFIG_PATH)}`);
 
   if (apiKey) {
@@ -22,7 +22,7 @@ export async function showConfigCommand(): Promise<void> {
     console.log(`  CURSOR_API_KEY: ${chalk.green(masked)} (${source})`);
   } else {
     console.log(`  CURSOR_API_KEY: ${chalk.yellow("not set")}`);
-    console.log(chalk.dim("    Set it with: openmemory config set-api-key <key>"));
+    console.log(chalk.dim("    Set it with: cursormemory config set-api-key <key>"));
   }
 
   console.log(`  Projects: ${config.projects.length}`);

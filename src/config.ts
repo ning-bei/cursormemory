@@ -1,27 +1,27 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "fs";
-import { CONFIG_PATH, OPENMEMORY_HOME, PROJECTS_DIR, DOCUMENTS_DIR } from "./constants.js";
+import { CONFIG_PATH, CURSORMEMORY_HOME, PROJECTS_DIR, DOCUMENTS_DIR } from "./constants.js";
 
 export interface ProjectConfig {
   name: string;
   path: string;
 }
 
-export interface OpenMemoryConfig {
+export interface CursorMemoryConfig {
   cursorApiKey?: string;
   projects: ProjectConfig[];
 }
 
-function defaultConfig(): OpenMemoryConfig {
+function defaultConfig(): CursorMemoryConfig {
   return { projects: [] };
 }
 
 export function ensureDirectories(): void {
-  for (const dir of [OPENMEMORY_HOME, PROJECTS_DIR, DOCUMENTS_DIR]) {
+  for (const dir of [CURSORMEMORY_HOME, PROJECTS_DIR, DOCUMENTS_DIR]) {
     if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
   }
 }
 
-export function loadConfig(): OpenMemoryConfig {
+export function loadConfig(): CursorMemoryConfig {
   ensureDirectories();
   if (!existsSync(CONFIG_PATH)) {
     const config = defaultConfig();
@@ -35,12 +35,12 @@ export function loadConfig(): OpenMemoryConfig {
   }
 }
 
-export function saveConfig(config: OpenMemoryConfig): void {
+export function saveConfig(config: CursorMemoryConfig): void {
   ensureDirectories();
   writeFileSync(CONFIG_PATH, JSON.stringify(config, null, 2) + "\n", "utf-8");
 }
 
-export function addProject(name: string, projectPath: string): OpenMemoryConfig {
+export function addProject(name: string, projectPath: string): CursorMemoryConfig {
   const config = loadConfig();
   const existing = config.projects.find((p) => p.name === name);
   if (existing) {
@@ -52,7 +52,7 @@ export function addProject(name: string, projectPath: string): OpenMemoryConfig 
   return config;
 }
 
-export function removeProject(name: string): OpenMemoryConfig {
+export function removeProject(name: string): CursorMemoryConfig {
   const config = loadConfig();
   config.projects = config.projects.filter((p) => p.name !== name);
   saveConfig(config);

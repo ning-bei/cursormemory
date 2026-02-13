@@ -1,12 +1,12 @@
 import { homedir } from "os";
 import { join } from "path";
 
-export const OPENMEMORY_HOME = join(homedir(), "openmemory");
-export const CONFIG_PATH = join(OPENMEMORY_HOME, "config.json");
-export const MEMORY_PATH = join(OPENMEMORY_HOME, "MEMORY.md");
-export const PROJECTS_DIR = join(OPENMEMORY_HOME, "projects");
-export const DOCUMENTS_DIR = join(OPENMEMORY_HOME, "documents");
-export const QMD_COLLECTION_NAME = "openmemory";
+export const CURSORMEMORY_HOME = join(homedir(), "cursormemory");
+export const CONFIG_PATH = join(CURSORMEMORY_HOME, "config.json");
+export const MEMORY_PATH = join(CURSORMEMORY_HOME, "MEMORY.md");
+export const PROJECTS_DIR = join(CURSORMEMORY_HOME, "projects");
+export const DOCUMENTS_DIR = join(CURSORMEMORY_HOME, "documents");
+export const QMD_COLLECTION_NAME = "cursormemory";
 
 export const AGENTS_MD_FILENAME = "AGENTS.md";
 export const MEMORY_MD_FILENAME = "MEMORY.md";
@@ -24,8 +24,6 @@ Don't ask permission. Just do it.
 
 You wake up fresh each session. \`MEMORY.md\` is your continuity.
 
-Raw conversation logs are automatically captured to \`~/openmemory/\` by Cursor hooks — you don't need to write daily notes.
-
 Capture what matters. Decisions, context, things to remember. Skip the secrets unless asked to keep them.
 
 ### 🧠 MEMORY.md - Your Long-Term Memory
@@ -38,7 +36,7 @@ Capture what matters. Decisions, context, things to remember. Skip the secrets u
 
 When you need prior experience, context, or knowledge related to the current task — **search for it**.
 
-Run: \`openmemory search "<your query>" --mode query -n 5 --full\`
+Run: \`cursormemory search "<your query>" --mode query -n 5 --full\`
 
 Do this when:
 - You're about to solve a problem you (or the user) might have tackled before
@@ -59,11 +57,11 @@ Don't ask permission. If you think past memory might help, just search.
 export const DISTILL_PROMPT = `You are a memory distiller. Your job is to review recent memory files and update the long-term memory.
 
 Instructions:
-1. Read through recent \`projects/*/memory/*.md\` files, \`projects/*/MEMORY.md\` files, and \`documents/*.md\` files in the openmemory directory
+1. Read through recent \`projects/*/memory/*.md\` files, \`projects/*/MEMORY.md\` files, and \`documents/*.md\` files in the cursormemory directory
 2. Identify significant events, lessons, or insights worth keeping long-term
 3. Update MEMORY.md with distilled learnings
 4. Remove outdated info from MEMORY.md that's no longer relevant
 
 Think of it like a human reviewing their journal and updating their mental model. Daily files are raw notes; MEMORY.md is curated wisdom.
 
-The openmemory directory is at: `;
+The cursormemory directory is at: `;

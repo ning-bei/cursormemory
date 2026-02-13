@@ -1,10 +1,10 @@
 import { readFileSync, writeFileSync, appendFileSync, existsSync, mkdirSync, cpSync } from "fs";
 import { join, basename } from "path";
 import chalk from "chalk";
-import { MEMORY_DIR_NAME, MEMORY_MD_FILENAME, OPENMEMORY_HOME, PROJECTS_DIR } from "../constants.js";
+import { MEMORY_DIR_NAME, MEMORY_MD_FILENAME, CURSORMEMORY_HOME, PROJECTS_DIR } from "../constants.js";
 import { loadConfig } from "../config.js";
 
-const STATE_PATH = join(OPENMEMORY_HOME, ".hook-state.json");
+const STATE_PATH = join(CURSORMEMORY_HOME, ".hook-state.json");
 
 interface HookInput {
   session_id?: string;
@@ -51,7 +51,7 @@ function loadState(): HookState {
 }
 
 function saveState(state: HookState): void {
-  if (!existsSync(OPENMEMORY_HOME)) mkdirSync(OPENMEMORY_HOME, { recursive: true });
+  if (!existsSync(CURSORMEMORY_HOME)) mkdirSync(CURSORMEMORY_HOME, { recursive: true });
   // Prune entries whose transcript files no longer exist
   const keys = Object.keys(state);
   if (keys.length > MAX_STATE_ENTRIES) {
@@ -207,10 +207,10 @@ export function syncProject(projectName: string, projectPath: string): void {
 }
 
 export async function syncCommand(): Promise<void> {
-  console.log(chalk.bold("Syncing openmemory...\n"));
+  console.log(chalk.bold("Syncing cursormemory...\n"));
   const config = loadConfig();
   if (config.projects.length === 0) {
-    console.log(chalk.yellow("  No projects configured. Use `openmemory project add` or `openmemory init`."));
+    console.log(chalk.yellow("  No projects configured. Use `cursormemory project add` or `cursormemory init`."));
     return;
   }
   for (const project of config.projects) {
@@ -261,7 +261,7 @@ export async function hookSaveMemory(): Promise<void> {
     const projectName = resolveProjectName(input.workspace_roots || []);
     if (!projectName) return;
 
-    // Write directly to ~/openmemory/projects/<name>/memory/
+    // Write directly to ~/cursormemory/projects/<name>/memory/
     const memDir = join(PROJECTS_DIR, projectName, MEMORY_DIR_NAME);
     if (!existsSync(memDir)) mkdirSync(memDir, { recursive: true });
 
