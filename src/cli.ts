@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { Command } from "commander";
 import { initCommand } from "./commands/init.js";
-import { syncCommand } from "./hooks/save-memory.js";
+import { hookSaveMemory, syncCommand } from "./hooks/save-memory.js";
 import { distillCommand } from "./commands/distill.js";
 import { indexCommand } from "./commands/index-cmd.js";
 import { addProjectCommand, removeProjectCommand, listProjectsCommand } from "./commands/add-project.js";
@@ -10,7 +10,6 @@ import { statusCommand } from "./commands/status.js";
 import { setApiKeyCommand, showConfigCommand } from "./commands/config-cmd.js";
 import { installCommandsAction } from "./commands/install-commands.js";
 import { installHooksCommand } from "./commands/install-hooks.js";
-import { hookSaveMemory } from "./hooks/save-memory.js";
 
 const program = new Command();
 
@@ -100,8 +99,7 @@ program
 program.command("status").description("Show openmemory status").action(statusCommand);
 
 // internal hook handler (hidden from help)
-const hookCmd = program.command("_hook-save-memory");
-hookCmd.action(hookSaveMemory);
-hookCmd.helpInformation = () => "";
+const hookCmd = new Command("_hook-save-memory").action(hookSaveMemory);
+program.addCommand(hookCmd, { hidden: true });
 
 program.parse();

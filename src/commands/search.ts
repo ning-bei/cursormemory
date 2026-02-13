@@ -1,15 +1,7 @@
-import { execSync } from "child_process";
+import { execFileSync } from "child_process";
 import chalk from "chalk";
 import { QMD_COLLECTION_NAME } from "../constants.js";
-
-function checkQmd(): boolean {
-  try {
-    execSync("which qmd", { stdio: "ignore" });
-    return true;
-  } catch {
-    return false;
-  }
-}
+import { checkQmd } from "../utils.js";
 
 export async function searchCommand(
   query: string,
@@ -27,15 +19,13 @@ export async function searchCommand(
     return;
   }
 
-  const args = [mode, `"${query}"`, "-c", QMD_COLLECTION_NAME];
+  const args = [mode, query, "-c", QMD_COLLECTION_NAME];
   if (options.num) args.push("-n", options.num);
   if (options.full) args.push("--full");
   if (options.json) args.push("--json");
 
-  const cmd = `qmd ${args.join(" ")}`;
-
   try {
-    execSync(cmd, { stdio: "inherit" });
+    execFileSync("qmd", args, { stdio: "inherit" });
   } catch {
     // qmd exits non-zero on no results
   }

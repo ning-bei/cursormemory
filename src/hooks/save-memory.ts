@@ -39,6 +39,8 @@ interface HookState {
   [transcriptPath: string]: number;
 }
 
+const MAX_STATE_ENTRIES = 200;
+
 function loadState(): HookState {
   if (!existsSync(STATE_PATH)) return {};
   try {
@@ -50,6 +52,13 @@ function loadState(): HookState {
 
 function saveState(state: HookState): void {
   if (!existsSync(OPENMEMORY_HOME)) mkdirSync(OPENMEMORY_HOME, { recursive: true });
+  // Prune entries whose transcript files no longer exist
+  const keys = Object.keys(state);
+  if (keys.length > MAX_STATE_ENTRIES) {
+    for (const key of keys) {
+      if (!existsSync(key)) delete state[key];
+    }
+  }
   writeFileSync(STATE_PATH, JSON.stringify(state), "utf-8");
 }
 
@@ -58,10 +67,18 @@ function saveState(state: HookState): void {
 function readStdin(): Promise<string> {
   return new Promise((resolve) => {
     let data = "";
+    let resolved = false;
+    const timer = setTimeout(() => {
+      if (!resolved) { resolved = true; resolve(data); }
+    }, 5000);
     process.stdin.setEncoding("utf-8");
     process.stdin.on("data", (chunk: string) => (data += chunk));
-    process.stdin.on("end", () => resolve(data));
-    setTimeout(() => resolve(data), 5000);
+    process.stdin.on("end", () => {
+      if (!resolved) { resolved = true; clearTimeout(timer); resolve(data); }
+    });
+    process.stdin.on("error", () => {
+      if (!resolved) { resolved = true; clearTimeout(timer); resolve(data); }
+    });
   });
 }
 

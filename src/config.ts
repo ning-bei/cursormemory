@@ -24,8 +24,9 @@ export function ensureDirectories(): void {
 export function loadConfig(): OpenMemoryConfig {
   ensureDirectories();
   if (!existsSync(CONFIG_PATH)) {
-    saveConfig(defaultConfig());
-    return defaultConfig();
+    const config = defaultConfig();
+    saveConfig(config);
+    return config;
   }
   try {
     return JSON.parse(readFileSync(CONFIG_PATH, "utf-8"));
