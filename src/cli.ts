@@ -22,7 +22,7 @@ program
 // init
 program
   .command("init")
-  .description("Initialize openmemory in the current project (creates MEMORY.md, memory/, AGENTS.md)")
+  .description("Initialize openmemory in the current project (creates MEMORY.md, AGENTS.md, hooks)")
   .option("-n, --name <name>", "Project name (defaults to directory name)")
   .action(initCommand);
 
@@ -93,7 +93,7 @@ program
 // install cursor hooks
 program
   .command("install-hooks")
-  .description("Install Cursor hooks to auto-save conversations to memory/")
+  .description("Install Cursor hooks to auto-save conversations to ~/openmemory")
   .action(installHooksCommand);
 
 // status
