@@ -1,3 +1,5 @@
 node_modules/
 dist/
 blueprint.md
+MEMORY.md
+.cursor
