@@ -68,6 +68,21 @@ cursormemory init
 | `cursormemory distill` | Distill recent notes into `~/cursormemory/MEMORY.md` via Cursor agent |
 | `cursormemory status` | Show cursormemory status and project info |
 
+### Daemon (auto-distill)
+
+| Command | Description |
+|---|---|
+| `cursormemory daemon start` | Start the background auto-distill daemon |
+| `cursormemory daemon stop` | Stop the daemon |
+| `cursormemory daemon status` | Show daemon status, last distill time |
+| `cursormemory daemon install` | Install as macOS launch agent (auto-start on login) |
+| `cursormemory daemon uninstall` | Remove the macOS launch agent |
+
+```bash
+cursormemory daemon start --interval 4  # distill every 4 hours
+cursormemory daemon status
+```
+
 ### Search & Index (requires qmd)
 
 | Command | Description |
@@ -127,7 +142,7 @@ The `/sync-cursormemory-docs` Cursor command lets you fetch cloud documents (Yuq
 ## Roadmap
 
 - [ ] **Memory search in agent instructions** — Add qmd search to AGENTS.md instructions so the LLM automatically searches past experiences and knowledge when it needs context beyond the current project
-- [ ] **Auto-distill daemon** — A background daemon process that periodically distills raw daily notes into curated `MEMORY.md`, so memory stays fresh without manual intervention
+- [x] **Auto-distill daemon** — A background daemon process that periodically distills raw daily notes into curated `MEMORY.md`, so memory stays fresh without manual intervention
 - [ ] **DingTalk morning briefing** — Send a daily morning message via DingTalk with today's plan, high-priority items, and pending tasks, based on recent memories and project status
 
 ## License

@@ -8,6 +8,19 @@ export const PROJECTS_DIR = join(CURSORMEMORY_HOME, "projects");
 export const DOCUMENTS_DIR = join(CURSORMEMORY_HOME, "documents");
 export const QMD_COLLECTION_NAME = "cursormemory";
 
+// Daemon
+export const DAEMON_PID_PATH = join(CURSORMEMORY_HOME, ".daemon.pid");
+export const DAEMON_LOG_PATH = join(CURSORMEMORY_HOME, ".daemon.log");
+export const DAEMON_STATE_PATH = join(CURSORMEMORY_HOME, ".daemon-state.json");
+export const DAEMON_DEFAULT_INTERVAL_HOURS = 6;
+export const LAUNCHD_LABEL = "com.cursormemory.daemon";
+export const LAUNCHD_PLIST_PATH = join(
+  homedir(),
+  "Library",
+  "LaunchAgents",
+  `${LAUNCHD_LABEL}.plist`
+);
+
 export const AGENTS_MD_FILENAME = "AGENTS.md";
 export const MEMORY_MD_FILENAME = "MEMORY.md";
 export const MEMORY_DIR_NAME = "memory";

@@ -10,6 +10,13 @@ import { statusCommand } from "./commands/status.js";
 import { setApiKeyCommand, showConfigCommand } from "./commands/config-cmd.js";
 import { installCommandsAction } from "./commands/install-commands.js";
 import { installHooksCommand } from "./commands/install-hooks.js";
+import {
+  daemonStartCommand,
+  daemonStopCommand,
+  daemonStatusCommand,
+  daemonInstallCommand,
+  daemonUninstallCommand,
+} from "./commands/daemon.js";
 
 const program = new Command();
 
@@ -97,6 +104,29 @@ program
 
 // status
 program.command("status").description("Show cursormemory status").action(statusCommand);
+
+// daemon
+const daemon = program.command("daemon").description("Manage auto-distill background daemon");
+
+daemon
+  .command("start")
+  .description("Start the auto-distill daemon")
+  .option("-i, --interval <hours>", "Distill interval in hours")
+  .action(daemonStartCommand);
+
+daemon.command("stop").description("Stop the daemon").action(daemonStopCommand);
+
+daemon.command("status").description("Show daemon status").action(daemonStatusCommand);
+
+daemon
+  .command("install")
+  .description("Install as macOS launch agent (auto-start on login)")
+  .action(daemonInstallCommand);
+
+daemon
+  .command("uninstall")
+  .description("Remove the macOS launch agent")
+  .action(daemonUninstallCommand);
 
 // internal hook handler (hidden from help)
 const hookCmd = new Command("_hook-save-memory").action(hookSaveMemory);
