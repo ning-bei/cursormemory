@@ -3,6 +3,8 @@ import { basename, resolve } from "path";
 import chalk from "chalk";
 import { addProject } from "../config.js";
 import { AGENTS_MD_FILENAME, MEMORY_MD_FILENAME, MEMORY_DIR_NAME, MEMORY_INSTRUCTION } from "../constants.js";
+import { installHooksToProject } from "./install-hooks.js";
+import { installCommandsAction } from "./install-commands.js";
 
 export async function initCommand(options: { name?: string }): Promise<void> {
   const projectPath = resolve(process.cwd());
@@ -42,6 +44,13 @@ export async function initCommand(options: { name?: string }): Promise<void> {
       console.log(chalk.green(`  Appended memory instructions to ${AGENTS_MD_FILENAME}`));
     }
   }
+
+  // Install Cursor hooks
+  installHooksToProject(projectPath);
+  console.log(chalk.green(`  Installed Cursor hooks (.cursor/hooks.json)`));
+
+  // Install Cursor commands
+  await installCommandsAction();
 
   // Register in config.json
   addProject(projectName, projectPath);

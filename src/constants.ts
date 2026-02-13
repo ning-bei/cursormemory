@@ -12,7 +12,15 @@ export const AGENTS_MD_FILENAME = "AGENTS.md";
 export const MEMORY_MD_FILENAME = "MEMORY.md";
 export const MEMORY_DIR_NAME = "memory";
 
-export const MEMORY_INSTRUCTION = `## Memory
+export const MEMORY_INSTRUCTION = `## Every Session
+
+Before doing anything else:
+
+Read \`MEMORY.md\` and \`memory/YYYY-MM-DD.md\` (most recent two files) for recent context
+
+Don't ask permission. Just do it.
+
+## Memory
 
 You wake up fresh each session. These files are your continuity:
 

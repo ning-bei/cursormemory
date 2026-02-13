@@ -9,6 +9,8 @@ import { searchCommand } from "./commands/search.js";
 import { statusCommand } from "./commands/status.js";
 import { setApiKeyCommand, showConfigCommand } from "./commands/config-cmd.js";
 import { installCommandsAction } from "./commands/install-commands.js";
+import { installHooksCommand } from "./commands/install-hooks.js";
+import { hookSaveMemory } from "./hooks/save-memory.js";
 
 const program = new Command();
 
@@ -88,7 +90,18 @@ program
   .description("Install Cursor IDE commands to ~/.cursor/commands/")
   .action(installCommandsAction);
 
+// install cursor hooks
+program
+  .command("install-hooks")
+  .description("Install Cursor hooks to auto-save conversations to memory/")
+  .action(installHooksCommand);
+
 // status
 program.command("status").description("Show openmemory status").action(statusCommand);
+
+// internal hook handler (hidden from help)
+const hookCmd = program.command("_hook-save-memory");
+hookCmd.action(hookSaveMemory);
+hookCmd.helpInformation = () => "";
 
 program.parse();
