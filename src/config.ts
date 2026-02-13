@@ -6,8 +6,17 @@ export interface ProjectConfig {
   path: string;
 }
 
+export interface TelegramConfig {
+  botToken: string;
+  chatId: string;
+  socksProxy?: string;
+  briefingTime?: string;   // "HH:MM" e.g. "09:30"
+  timezone?: string;        // IANA e.g. "Asia/Shanghai"
+}
+
 export interface CursorMemoryConfig {
   cursorApiKey?: string;
+  telegram?: TelegramConfig;
   projects: ProjectConfig[];
 }
 
@@ -68,4 +77,14 @@ export function setCursorApiKey(key: string): void {
 
 export function getCursorApiKey(): string | undefined {
   return process.env.CURSOR_API_KEY || loadConfig().cursorApiKey;
+}
+
+export function setTelegramConfig(telegram: TelegramConfig): void {
+  const config = loadConfig();
+  config.telegram = telegram;
+  saveConfig(config);
+}
+
+export function getTelegramConfig(): TelegramConfig | undefined {
+  return loadConfig().telegram;
 }

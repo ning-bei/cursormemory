@@ -12,6 +12,7 @@ import {
   LAUNCHD_PLIST_PATH,
 } from "../constants.js";
 import { loadState, saveState } from "../daemon/state.js";
+import { getTelegramConfig } from "../config.js";
 
 function readPid(): number | null {
   if (!existsSync(DAEMON_PID_PATH)) return null;
@@ -105,6 +106,15 @@ export function daemonStatusCommand(): void {
     console.log(`  Last run:  ${ago} ago (${result})`);
   } else {
     console.log(`  Last run:  ${chalk.dim("never")}`);
+  }
+
+  const tg = getTelegramConfig();
+  if (tg?.briefingTime) {
+    const tz = tg.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
+    console.log(`  Briefing:  ${chalk.cyan(tg.briefingTime)} (${tz})`);
+    if (state.lastBriefingDate) {
+      console.log(`  Last sent: ${state.lastBriefingDate}`);
+    }
   }
 
   if (existsSync(DAEMON_LOG_PATH)) {

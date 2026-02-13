@@ -17,6 +17,12 @@ import {
   daemonInstallCommand,
   daemonUninstallCommand,
 } from "./commands/daemon.js";
+import {
+  notifySetupCommand,
+  notifyTestCommand,
+  notifyBriefingCommand,
+  notifySendCommand,
+} from "./commands/notify.js";
 
 const program = new Command();
 
@@ -127,6 +133,28 @@ daemon
   .command("uninstall")
   .description("Remove the macOS launch agent")
   .action(daemonUninstallCommand);
+
+// notify
+const notify = program.command("notify").description("Manage Telegram notifications");
+
+notify
+  .command("setup")
+  .description("Configure Telegram bot (auto-detects chat ID)")
+  .requiredOption("-t, --token <token>", "Telegram bot token from @BotFather")
+  .option("-c, --chat-id <chatId>", "Manually set chat ID (skips auto-detect)")
+  .action(notifySetupCommand);
+
+notify.command("test").description("Send a test message").action(notifyTestCommand);
+
+notify
+  .command("briefing")
+  .description("Send a morning briefing based on current memories")
+  .action(notifyBriefingCommand);
+
+notify
+  .command("send <message>")
+  .description("Send a custom message via Telegram")
+  .action(notifySendCommand);
 
 // internal hook handler (hidden from help)
 const hookCmd = new Command("_hook-save-memory").action(hookSaveMemory);

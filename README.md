@@ -83,6 +83,18 @@ cursormemory daemon start --interval 4  # distill every 4 hours
 cursormemory daemon status
 ```
 
+### Notifications (Telegram)
+
+| Command | Description |
+|---|---|
+| `cursormemory notify setup --token <token>` | Configure Telegram bot (auto-detects chat ID) |
+| `cursormemory notify setup --token <token> --chat-id <id>` | Configure manually |
+| `cursormemory notify test` | Send a test message |
+| `cursormemory notify briefing` | Send a morning briefing from current memories |
+| `cursormemory notify send <message>` | Send a custom message |
+
+The daemon automatically sends a briefing via Telegram after each distill cycle.
+
 ### Search & Index (requires qmd)
 
 | Command | Description |
@@ -141,9 +153,9 @@ The `/sync-cursormemory-docs` Cursor command lets you fetch cloud documents (Yuq
 
 ## Roadmap
 
-- [ ] **Memory search in agent instructions** — Add qmd search to AGENTS.md instructions so the LLM automatically searches past experiences and knowledge when it needs context beyond the current project
+- [x] **Memory search in agent instructions** — Add qmd search to AGENTS.md instructions so the LLM automatically searches past experiences and knowledge when it needs context beyond the current project
 - [x] **Auto-distill daemon** — A background daemon process that periodically distills raw daily notes into curated `MEMORY.md`, so memory stays fresh without manual intervention
-- [ ] **DingTalk morning briefing** — Send a daily morning message via DingTalk with today's plan, high-priority items, and pending tasks, based on recent memories and project status
+- [x] **Telegram morning briefing** — Send a daily briefing via Telegram with high-priority items, in-progress work, open issues, and key metrics, based on distilled memories
 
 ## License
 

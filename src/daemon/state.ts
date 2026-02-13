@@ -11,6 +11,7 @@ export interface DaemonState {
   lastDistill?: string;
   success?: boolean;
   intervalHours: number;
+  lastBriefingDate?: string; // "YYYY-MM-DD" in configured timezone
 }
 
 function defaultState(): DaemonState {
