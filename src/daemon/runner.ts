@@ -4,6 +4,10 @@ import { CURSORMEMORY_HOME, DISTILL_PROMPT, DAEMON_PID_PATH } from "../constants
 import { runCursorAgent, checkCursorCli } from "../cursor-cli.js";
 import { loadState, saveState, hasNewMaterial, intervalMs } from "./state.js";
 
+const MAX_RETRIES = 2;
+const RETRY_DELAY_MS = 30_000;
+const AGENT_TIMEOUT_MS = 10 * 60_000; // 10 minutes
+
 function log(msg: string): void {
   const ts = new Date().toISOString();
   console.log(`[${ts}] ${msg}`);
@@ -16,13 +20,35 @@ function cleanup(): void {
 }
 
 async function distill(): Promise<boolean> {
-  log("Starting distill...");
   const prompt = DISTILL_PROMPT + CURSORMEMORY_HOME;
-  const result = await runCursorAgent(prompt, CURSORMEMORY_HOME);
-  const ok = result.exitCode === 0;
-  saveState({ lastDistill: new Date().toISOString(), success: ok });
-  log(`Distill ${ok ? "succeeded" : "failed"} (exit ${result.exitCode})`);
-  return ok;
+
+  for (let attempt = 1; attempt <= MAX_RETRIES + 1; attempt++) {
+    log(`Starting distill (attempt ${attempt}/${MAX_RETRIES + 1})...`);
+    const result = await runCursorAgent(prompt, CURSORMEMORY_HOME, {
+      timeoutMs: AGENT_TIMEOUT_MS,
+    });
+
+    if (result.exitCode === 0) {
+      saveState({ lastDistill: new Date().toISOString(), success: true });
+      log("Distill succeeded");
+      return true;
+    }
+
+    const reason =
+      result.exitCode === 124
+        ? "timed out"
+        : `exit ${result.exitCode}`;
+    log(`Distill failed (${reason}): ${result.output.slice(-200).trim()}`);
+
+    if (attempt <= MAX_RETRIES) {
+      log(`Retrying in ${RETRY_DELAY_MS / 1000}s...`);
+      await sleep(RETRY_DELAY_MS);
+    }
+  }
+
+  saveState({ lastDistill: new Date().toISOString(), success: false });
+  log("Distill failed after all retries");
+  return false;
 }
 
 function sleep(ms: number): Promise<void> {
@@ -50,7 +76,6 @@ async function main(): Promise<void> {
     process.exit(0);
   });
 
-  // Main loop
   while (true) {
     const state = loadState();
     const interval = intervalMs(state);

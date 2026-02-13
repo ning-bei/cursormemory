@@ -54,7 +54,7 @@ export function requireCursorCli(): void {
 export function runCursorAgent(
   prompt: string,
   cwd: string,
-  opts: { model?: string; mode?: string } = {}
+  opts: { model?: string; mode?: string; timeoutMs?: number } = {}
 ): Promise<{ exitCode: number; output: string }> {
   const model = opts.model ?? "opus-4.6";
   const args = ["-p", prompt, "--model", model, "--approve-mcps"];
@@ -72,6 +72,37 @@ export function runCursorAgent(
 
     let output = "";
     let stderr = "";
+    let killed = false;
+    let resolved = false;
+
+    const finish = (exitCode: number) => {
+      if (resolved) return;
+      resolved = true;
+      if (timeout) clearTimeout(timeout);
+      // Drain remaining pipe data briefly, then resolve
+      setTimeout(() => {
+        if (killed) {
+          resolve({ exitCode: 124, output: output + stderr + "\n[timed out]" });
+          return;
+        }
+        if (exitCode !== 0 && stderr.toLowerCase().includes("auth")) {
+          console.error(chalk.red("\n  Authentication error from Cursor CLI."));
+          console.error(chalk.dim("  Run `agent` once to login, or set CURSOR_API_KEY."));
+        }
+        // Destroy pipes so orphaned child processes don't keep us hanging
+        proc.stdout?.destroy();
+        proc.stderr?.destroy();
+        resolve({ exitCode, output: output + stderr });
+      }, 500);
+    };
+
+    const timeout = opts.timeoutMs
+      ? setTimeout(() => {
+          killed = true;
+          proc.kill("SIGTERM");
+          setTimeout(() => proc.kill("SIGKILL"), 5000);
+        }, opts.timeoutMs)
+      : null;
 
     proc.stdout?.on("data", (data: Buffer) => {
       const text = data.toString();
@@ -85,16 +116,19 @@ export function runCursorAgent(
       process.stderr.write(chalk.dim("  " + text));
     });
 
-    proc.on("close", (code) => {
-      if (code !== 0 && stderr.toLowerCase().includes("auth")) {
-        console.error(chalk.red("\n  Authentication error from Cursor CLI."));
-        console.error(chalk.dim("  Run `agent` once to login, or set CURSOR_API_KEY."));
-      }
-      resolve({ exitCode: code ?? 1, output: output + stderr });
+    // Use 'exit' instead of 'close' — 'close' waits for all pipes to close,
+    // but the agent CLI can spawn orphaned worker processes that inherit the
+    // pipe FDs, causing 'close' to never fire.
+    proc.on("exit", (code) => {
+      finish(code ?? 1);
     });
 
     proc.on("error", () => {
-      resolve({ exitCode: 1, output: "Failed to spawn Cursor agent CLI" });
+      if (timeout) clearTimeout(timeout);
+      if (!resolved) {
+        resolved = true;
+        resolve({ exitCode: 1, output: "Failed to spawn Cursor agent CLI" });
+      }
     });
   });
 }
