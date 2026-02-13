@@ -156,6 +156,8 @@ The `/sync-cursormemory-docs` Cursor command lets you fetch cloud documents (Yuq
 - [x] **Memory search in agent instructions** — Add qmd search to AGENTS.md instructions so the LLM automatically searches past experiences and knowledge when it needs context beyond the current project
 - [x] **Auto-distill daemon** — A background daemon process that periodically distills raw daily notes into curated `MEMORY.md`, so memory stays fresh without manual intervention
 - [x] **Telegram morning briefing** — Send a daily briefing via Telegram with high-priority items, in-progress work, open issues, and key metrics, based on distilled memories
+- [ ] **DingTalk morning briefing** 
+- [ ] **Chat Function** — Chat through Telegram bot or DingTalk groupchat robot by @mention
 
 ## License
 
