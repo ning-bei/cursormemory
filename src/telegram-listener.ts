@@ -1,7 +1,7 @@
 import { existsSync, mkdirSync, writeFileSync, appendFileSync, readFileSync, unlinkSync } from "fs";
 import { TelegramConfig } from "./config.js";
 import { getUpdates, sendTelegramMessage } from "./notify/telegram.js";
-import { DAILY_NOTES_DIR, LISTENER_PID_PATH } from "./constants.js";
+import { DAILY_NOTES_DIR, LISTENER_PID_PATH, LISTENER_OFFSET_PATH } from "./constants.js";
 
 function todayDateString(tz?: string): string {
   return new Date().toLocaleDateString("en-CA", {
@@ -33,6 +33,24 @@ function appendToDaily(text: string, tz?: string): string {
   appendFileSync(filePath, `- **${timestampString(tz)}** ${text}\n`, "utf-8");
   return filePath;
 }
+
+// --- offset persistence ---
+
+function loadOffset(): number | undefined {
+  try {
+    if (!existsSync(LISTENER_OFFSET_PATH)) return undefined;
+    const val = parseInt(readFileSync(LISTENER_OFFSET_PATH, "utf-8").trim(), 10);
+    return isNaN(val) ? undefined : val;
+  } catch {
+    return undefined;
+  }
+}
+
+function saveOffset(offset: number): void {
+  writeFileSync(LISTENER_OFFSET_PATH, String(offset), "utf-8");
+}
+
+// --- lock ---
 
 function isProcessAlive(pid: number): boolean {
   try {
@@ -69,6 +87,8 @@ function releaseLock(): void {
   } catch {}
 }
 
+// --- listener ---
+
 export interface ListenerHandle {
   stop: () => void;
 }
@@ -84,10 +104,10 @@ export function startTelegramListener(
   }
 
   let running = true;
-  let offset: number | undefined;
+  let offset = loadOffset();
 
   const poll = async () => {
-    log(`Telegram listener started (chat ${config.chatId})`);
+    log(`Telegram listener started (chat ${config.chatId}, offset ${offset ?? "none"})`);
     while (running) {
       try {
         const resp = await getUpdates(config.botToken, { offset, timeout: 30 });
@@ -95,6 +115,7 @@ export function startTelegramListener(
 
         for (const update of resp.result) {
           offset = update.update_id + 1;
+          saveOffset(offset);
 
           const text = update.message?.text;
           if (!text) continue;

@@ -11,6 +11,7 @@ export const QMD_COLLECTION_NAME = "cursormemory";
 
 // Listener
 export const LISTENER_PID_PATH = join(CURSORMEMORY_HOME, ".listener.pid");
+export const LISTENER_OFFSET_PATH = join(CURSORMEMORY_HOME, ".listener-offset");
 
 // Daemon
 export const DAEMON_PID_PATH = join(CURSORMEMORY_HOME, ".daemon.pid");

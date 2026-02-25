@@ -18,7 +18,7 @@ function getAgent(): SocksProxyAgent | undefined {
   return undefined;
 }
 
-function request(url: string, options: https.RequestOptions, body?: string): Promise<string> {
+function request(url: string, options: https.RequestOptions, body?: string, timeoutMs = 30_000): Promise<string> {
   return new Promise((resolve, reject) => {
     const req = https.request(url, options, (res) => {
       let data = "";
@@ -26,7 +26,7 @@ function request(url: string, options: https.RequestOptions, body?: string): Pro
       res.on("end", () => resolve(data));
     });
     req.on("error", reject);
-    req.setTimeout(30_000, () => {
+    req.setTimeout(timeoutMs, () => {
       req.destroy(new Error("Request timed out"));
     });
     if (body) req.write(body);
@@ -73,7 +73,8 @@ export async function getUpdates(
   if (opts?.timeout != null) params.set("timeout", String(opts.timeout));
   const qs = params.toString();
   const url = `${API_BASE}${botToken}/getUpdates${qs ? `?${qs}` : ""}`;
-  const data = await request(url, { method: "GET", agent: getAgent() });
+  const pollSeconds = opts?.timeout ?? 0;
+  const data = await request(url, { method: "GET", agent: getAgent() }, undefined, (pollSeconds + 15) * 1000);
   return JSON.parse(data);
 }
 
