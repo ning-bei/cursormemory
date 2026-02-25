@@ -2,6 +2,7 @@ import chalk from "chalk";
 import { getTelegramConfig, setTelegramConfig } from "../config.js";
 import { sendTelegramMessage, getUpdates } from "../notify/telegram.js";
 import { generateBriefing } from "../notify/briefing.js";
+import { saveState } from "../daemon/state.js";
 
 export async function notifySetupCommand(opts: { token?: string; chatId?: string }): Promise<void> {
   const token = opts.token;
@@ -87,6 +88,11 @@ export async function notifyBriefingCommand(): Promise<void> {
     const result = await sendTelegramMessage(config, briefing);
     if (result.ok) {
       console.log(chalk.green("Briefing sent!"));
+      // Mark today's briefing as sent so the daemon doesn't send a duplicate
+      const tz = config.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const d = new Date(new Date().toLocaleString("en-US", { timeZone: tz }));
+      const today = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+      saveState({ lastBriefingDate: today });
     } else {
       console.error(chalk.red(`Telegram error: ${result.description}`));
       console.error(chalk.dim("Raw message:"));
