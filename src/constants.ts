@@ -96,7 +96,7 @@ Rules:
 export const DISTILL_PROMPT = `You are a memory distiller. Your job is to review recent memory files and update the long-term memory.
 
 Instructions:
-1. Read through recent \`projects/*/memory/*.md\` files, \`projects/*/MEMORY.md\` files, and \`documents/*.md\` files in the cursormemory directory
+1. Read through recent \`projects/*/memory/*.md\` files, \`projects/*/MEMORY.md\` files, and \`documents/*/*.md\` files in the cursormemory directory
 2. Identify significant events, lessons, or insights worth keeping long-term
 3. Update MEMORY.md with distilled learnings
 4. Remove outdated info from MEMORY.md that's no longer relevant
