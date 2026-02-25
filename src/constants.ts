@@ -6,6 +6,7 @@ export const CONFIG_PATH = join(CURSORMEMORY_HOME, "config.json");
 export const MEMORY_PATH = join(CURSORMEMORY_HOME, "MEMORY.md");
 export const PROJECTS_DIR = join(CURSORMEMORY_HOME, "projects");
 export const DOCUMENTS_DIR = join(CURSORMEMORY_HOME, "documents");
+export const DAILY_NOTES_DIR = join(DOCUMENTS_DIR, "daily-notes");
 export const QMD_COLLECTION_NAME = "cursormemory";
 
 // Daemon

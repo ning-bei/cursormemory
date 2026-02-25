@@ -23,6 +23,7 @@ import {
   notifyBriefingCommand,
   notifySendCommand,
 } from "./commands/notify.js";
+import { listenCommand } from "./commands/listen.js";
 
 const program = new Command();
 
@@ -155,6 +156,11 @@ notify
   .command("send <message>")
   .description("Send a custom message via Telegram")
   .action(notifySendCommand);
+
+notify
+  .command("listen")
+  .description("Listen for Telegram messages and save to daily notes")
+  .action(listenCommand);
 
 // internal hook handler (hidden from help)
 const hookCmd = new Command("_hook-save-memory").action(hookSaveMemory);

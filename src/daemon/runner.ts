@@ -6,6 +6,7 @@ import { loadState, saveState, hasNewMaterial, intervalMs } from "./state.js";
 import { getTelegramConfig } from "../config.js";
 import { sendTelegramMessage } from "../notify/telegram.js";
 import { generateBriefing } from "../notify/briefing.js";
+import { startTelegramListener, ListenerHandle } from "../telegram-listener.js";
 
 const MAX_RETRIES = 2;
 const RETRY_DELAY_MS = 30_000;
@@ -141,22 +142,32 @@ async function main(): Promise<void> {
     process.exit(1);
   }
 
+  const tg = getTelegramConfig();
+  let listenerHandle: ListenerHandle | undefined;
+
+  const shutdownAll = () => {
+    listenerHandle?.stop();
+    cleanup();
+  };
+
   process.on("SIGTERM", () => {
     log("Received SIGTERM, shutting down");
-    cleanup();
+    shutdownAll();
     process.exit(0);
   });
 
   process.on("SIGINT", () => {
     log("Received SIGINT, shutting down");
-    cleanup();
+    shutdownAll();
     process.exit(0);
   });
 
-  const tg = getTelegramConfig();
-  if (tg?.briefingTime) {
-    const tz = tg.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
-    log(`Briefing scheduled at ${tg.briefingTime} (${tz})`);
+  if (tg) {
+    listenerHandle = startTelegramListener(tg, log);
+    if (tg.briefingTime) {
+      const tz = tg.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
+      log(`Briefing scheduled at ${tg.briefingTime} (${tz})`);
+    }
   }
 
   while (true) {

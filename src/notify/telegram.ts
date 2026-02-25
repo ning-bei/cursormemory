@@ -53,10 +53,26 @@ export async function sendTelegramMessage(
   return JSON.parse(data);
 }
 
+export interface TelegramUpdate {
+  update_id: number;
+  message?: {
+    message_id: number;
+    chat: { id: number };
+    from?: { first_name?: string };
+    text?: string;
+    date: number;
+  };
+}
+
 export async function getUpdates(
-  botToken: string
-): Promise<{ ok: boolean; result: Array<{ message?: { chat: { id: number }; from?: { first_name?: string } } }> }> {
-  const url = `${API_BASE}${botToken}/getUpdates`;
+  botToken: string,
+  opts?: { offset?: number; timeout?: number }
+): Promise<{ ok: boolean; result: TelegramUpdate[] }> {
+  const params = new URLSearchParams();
+  if (opts?.offset != null) params.set("offset", String(opts.offset));
+  if (opts?.timeout != null) params.set("timeout", String(opts.timeout));
+  const qs = params.toString();
+  const url = `${API_BASE}${botToken}/getUpdates${qs ? `?${qs}` : ""}`;
   const data = await request(url, { method: "GET", agent: getAgent() });
   return JSON.parse(data);
 }
