@@ -3,7 +3,8 @@ import { unlinkSync, existsSync } from "fs";
 import { CURSORMEMORY_HOME, DISTILL_PROMPT, DAEMON_PID_PATH } from "../constants.js";
 import { runCursorAgent, checkCursorCli } from "../cursor-cli.js";
 import { loadState, saveState, hasNewMaterial, intervalMs } from "./state.js";
-import { getTelegramConfig } from "../config.js";
+import { loadConfig, getTelegramConfig } from "../config.js";
+import { syncProject } from "../hooks/save-memory.js";
 import { sendTelegramMessage } from "../notify/telegram.js";
 import { generateBriefing } from "../notify/briefing.js";
 import { startTelegramListener, ListenerHandle } from "../telegram-listener.js";
@@ -76,7 +77,18 @@ function isDistillDue(): boolean {
 
 // --- actions ---
 
+function syncAllProjects(): void {
+  const config = loadConfig();
+  for (const project of config.projects) {
+    syncProject(project.name, project.path);
+  }
+  if (config.projects.length > 0) {
+    log(`Synced ${config.projects.length} project(s) before distill`);
+  }
+}
+
 async function distill(): Promise<boolean> {
+  syncAllProjects();
   const prompt = DISTILL_PROMPT + CURSORMEMORY_HOME;
 
   for (let attempt = 1; attempt <= MAX_RETRIES + 1; attempt++) {
@@ -163,7 +175,7 @@ async function main(): Promise<void> {
   });
 
   if (tg) {
-    listenerHandle = startTelegramListener(tg, log);
+    listenerHandle = startTelegramListener(tg, log) ?? undefined;
     if (tg.briefingTime) {
       const tz = tg.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
       log(`Briefing scheduled at ${tg.briefingTime} (${tz})`);

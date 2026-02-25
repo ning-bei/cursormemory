@@ -88,3 +88,4 @@ export function setTelegramConfig(telegram: TelegramConfig): void {
 export function getTelegramConfig(): TelegramConfig | undefined {
   return loadConfig().telegram;
 }
+

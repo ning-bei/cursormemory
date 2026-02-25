@@ -9,6 +9,9 @@ export const DOCUMENTS_DIR = join(CURSORMEMORY_HOME, "documents");
 export const DAILY_NOTES_DIR = join(DOCUMENTS_DIR, "daily-notes");
 export const QMD_COLLECTION_NAME = "cursormemory";
 
+// Listener
+export const LISTENER_PID_PATH = join(CURSORMEMORY_HOME, ".listener.pid");
+
 // Daemon
 export const DAEMON_PID_PATH = join(CURSORMEMORY_HOME, ".daemon.pid");
 export const DAEMON_LOG_PATH = join(CURSORMEMORY_HOME, ".daemon.log");
