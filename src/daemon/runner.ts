@@ -8,6 +8,7 @@ import { syncProject } from "../hooks/save-memory.js";
 import { sendTelegramMessage } from "../notify/telegram.js";
 import { generateBriefing } from "../notify/briefing.js";
 import { startTelegramListener } from "../telegram-listener.js";
+import { indexCommand } from "../commands/index-cmd.js";
 
 const MAX_RETRIES = 2;
 const RETRY_DELAY_MS = 30_000;
@@ -196,7 +197,16 @@ async function main(): Promise<void> {
     // 2. Check distill schedule
     if (isDistillDue() && hasNewMaterial()) {
       try {
-        await distill();
+        const distillOk = await distill();
+        if (distillOk) {
+          try {
+            log("Running qmd index after distill...");
+            await indexCommand({});
+            log("qmd index complete");
+          } catch (err) {
+            log(`Index error: ${err}`);
+          }
+        }
       } catch (err) {
         log(`Distill error: ${err}`);
         saveState({ lastDistill: new Date().toISOString(), success: false });
