@@ -7,7 +7,7 @@ import { loadConfig, getTelegramConfig } from "../config.js";
 import { syncProject } from "../hooks/save-memory.js";
 import { sendTelegramMessage } from "../notify/telegram.js";
 import { generateBriefing } from "../notify/briefing.js";
-import { startTelegramListener, ListenerHandle } from "../telegram-listener.js";
+import { startTelegramListener } from "../telegram-listener.js";
 
 const MAX_RETRIES = 2;
 const RETRY_DELAY_MS = 30_000;
@@ -155,7 +155,7 @@ async function main(): Promise<void> {
   }
 
   const tg = getTelegramConfig();
-  let listenerHandle: ListenerHandle | undefined;
+  let listenerHandle: ReturnType<typeof startTelegramListener> | undefined;
 
   const shutdownAll = () => {
     listenerHandle?.stop();
@@ -175,7 +175,7 @@ async function main(): Promise<void> {
   });
 
   if (tg) {
-    listenerHandle = startTelegramListener(tg, log) ?? undefined;
+    listenerHandle = startTelegramListener(tg, log);
     if (tg.briefingTime) {
       const tz = tg.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
       log(`Briefing scheduled at ${tg.briefingTime} (${tz})`);

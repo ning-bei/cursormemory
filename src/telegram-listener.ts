@@ -50,7 +50,7 @@ function saveOffset(offset: number): void {
   writeFileSync(LISTENER_OFFSET_PATH, String(offset), "utf-8");
 }
 
-// --- lock ---
+// --- takeover lock ---
 
 function isProcessAlive(pid: number): boolean {
   try {
@@ -61,24 +61,20 @@ function isProcessAlive(pid: number): boolean {
   }
 }
 
-export function isListenerRunning(): { running: boolean; pid?: number } {
-  if (!existsSync(LISTENER_PID_PATH)) return { running: false };
+function killExistingListener(log: (msg: string) => void): void {
+  if (!existsSync(LISTENER_PID_PATH)) return;
   const pid = parseInt(readFileSync(LISTENER_PID_PATH, "utf-8").trim(), 10);
-  if (isNaN(pid) || !isProcessAlive(pid)) {
-    try { unlinkSync(LISTENER_PID_PATH); } catch {}
-    return { running: false };
+  if (!isNaN(pid) && pid !== process.pid && isProcessAlive(pid)) {
+    log(`Taking over from existing listener (PID ${pid})`);
+    try { process.kill(pid, "SIGTERM"); } catch {}
   }
-  return { running: true, pid };
 }
 
-function acquireLock(): boolean {
-  const check = isListenerRunning();
-  if (check.running) return false;
+function writePid(): void {
   writeFileSync(LISTENER_PID_PATH, String(process.pid), "utf-8");
-  return true;
 }
 
-function releaseLock(): void {
+function removePid(): void {
   try {
     if (existsSync(LISTENER_PID_PATH)) {
       const pid = parseInt(readFileSync(LISTENER_PID_PATH, "utf-8").trim(), 10);
@@ -96,12 +92,9 @@ export interface ListenerHandle {
 export function startTelegramListener(
   config: TelegramConfig,
   log: (msg: string) => void = console.log
-): ListenerHandle | null {
-  if (!acquireLock()) {
-    const { pid } = isListenerRunning();
-    log(`Telegram listener already running (PID ${pid}), skipping`);
-    return null;
-  }
+): ListenerHandle {
+  killExistingListener(log);
+  writePid();
 
   let running = true;
   let offset = loadOffset();
@@ -114,6 +107,13 @@ export function startTelegramListener(
         if (!resp.ok || !resp.result?.length) continue;
 
         for (const update of resp.result) {
+          // Double-check offset from disk in case another process updated it
+          const diskOffset = loadOffset() ?? 0;
+          if (update.update_id < diskOffset) {
+            offset = diskOffset;
+            continue;
+          }
+
           offset = update.update_id + 1;
           saveOffset(offset);
 
@@ -140,7 +140,7 @@ export function startTelegramListener(
   return {
     stop: () => {
       running = false;
-      releaseLock();
+      removePid();
     },
   };
 }
